@@ -1,17 +1,33 @@
-namespace Userhash
+using System;
+using System.Windows.Forms;
+using Userhash;
+
+namespace UserHash
 {
-    internal static class Program
+    static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
+        public static UserManager Manager = new UserManager();
+
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            Manager.Load();
+
+            if (Manager.Users.Count == 0)
+            {
+                AdminUser admin = new AdminUser();
+                admin.Username = "admin";
+                admin.PasswordHash = UserManager.Hash("admin");
+
+                Manager.Users.Add(admin);
+                Manager.Save();
+            }
+
+
+            Application.Run(new LoginForm());
         }
     }
 }
